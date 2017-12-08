@@ -192,15 +192,27 @@ class Nuitka(build_ext):
                     self._delete_path(final_pyd)
 
             print("compiling %s -> %s" % ((cwd / target), final_pyd))
-            if ext.compile_each_file:
-                subprocess.run([sys.executable, str(self._nuitka_script()),
-                                '--module', target, '--recurse-none'] + ext.extra_cmd, cwd=str(cwd))
-            else:
-                subprocess.run([sys.executable, str(self._nuitka_script()), '--module', target,
-                                '--recurse-directory', target, '--recurse-to', target] + ext.extra_cmd, cwd=str(cwd))
 
-            pyd = (cwd / target).with_suffix(".pyd")
+            for retry in reversed(range(3)):
+                if ext.compile_each_file:
+                    proc = subprocess.run([sys.executable, str(self._nuitka_script()),
+                                           '--module', target, '--recurse-none'] + ext.extra_cmd, cwd=str(cwd),
+                                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                else:
+                    proc = subprocess.run([sys.executable, str(self._nuitka_script()), '--module', target,
+                                           '--recurse-directory', target, '--recurse-to', target] + ext.extra_cmd,
+                                          cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-            if pyd.exists():
-                pyd.rename(final_pyd)
-                self.cleanup_module(original, cwd, target)
+                pyd = (cwd / target).with_suffix(".pyd")
+
+                if pyd.exists():
+                    pyd.rename(final_pyd)
+                    self.cleanup_module(original, cwd, target)
+                    break
+
+                else:
+                    print(proc.stdout)
+                    if retry:
+                        print("ERROR: Compilation Failed, retry...")
+                    else:
+                        raise Exception("ERROR: Compilation Failed!")
