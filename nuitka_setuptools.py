@@ -123,16 +123,28 @@ class Nuitka(build_ext):
     @staticmethod
     def _nuitka_script():
         """
-        Only working for windows, find the nuitka run script.
         TODO: setuptools.entry_points handling could probably be used to find the correct location for any platform
         :return:
         """
-        path = Path(sys.executable).parent
-        if path.name != 'Scripts':
-            path = path.join("Scripts")
-        if not path.exists():
-            raise Exception("Cannot find scripts directory? %s" % path)
-        return path / 'nuitka'
+        from nuitka.utils.Execution import getExecutablePath
+        nuitka_binary = getExecutablePath("nuitka")
+
+        if nuitka_binary is None:
+            # Fallback method, only works on windows
+            path = Path(sys.executable).parent
+            nuitka_binary = path / 'nuitka'
+
+            bindir = 'Scripts' if os.name == 'nt' else 'bin'
+            if not nuitka_binary.exists() and path.name != bindir:
+                path = path / bindir
+                if not path.exists():
+                    raise ValueError("Cannot find scripts/bin directory? %s" % path)
+                nuitka_binary = path / 'nuitka'
+
+        if not Path(nuitka_binary).exists():
+            raise ValueError("Nuitka binary cannot be found on path or python scripts dir")
+
+        return nuitka_binary
 
     @staticmethod
     def _delete_path(path):
