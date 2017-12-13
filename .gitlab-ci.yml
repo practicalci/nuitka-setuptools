@@ -2,22 +2,23 @@ image: quay.io/pypa/manylinux1_x86_64
 
 before_script:
   - export PATH=/opt/python/cp35-cp35m/bin:$PATH
-  - pip install --editable .
+  - pip install -U pip setuptools wheel twine
+  - pip install .
 
 stages:
-#  - test
+  - test
   - deploy
 
-#test:
-#  stage: test
-#  script:
-#  - make -C tests >/dev/null
-#  - py.test $@ tests/
+test:
+  stage: test
+  script:
+  - cd tests
+  - python setup.py bdist_wheel
+  - tar xvf dist/*.tgz
 
 deploy:
   stage: deploy
   script:
-  - pip install -U twine setuptools wheel
   - python setup.py sdist
   - python setup.py bdist_wheel
   - twine upload -u $PYPI_USER -p $PYPI_PASS dist/*

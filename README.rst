@@ -19,8 +19,25 @@ With nuitka-setuptools this wheel can be devoid of pure python and only contain 
 
 Basic Usage: setup.py::
 
+    import sys
     from setuptools import setup
-    from nuitka_setuptools import Nuitka, Compile
+
+    # Get the long description from the README file
+    with open(path.join(path.dirname(__file__), 'README.rst'), 'r') as f:
+        long_description = f.read()
+
+    packages = ['mod', 'pkg']
+
+    if any('bdist' in arg for arg in sys.argv):
+        from nuitka_setuptools import Nuitka, Compile
+
+        build_settings = dict(
+            # Compile module
+            cmdclass={'build_ext': Nuitka},
+            ext_modules=Compile(packages),
+        )
+    else:
+        build_settings = {}
 
 
     setup(
@@ -34,8 +51,9 @@ Basic Usage: setup.py::
         url='https://gitlab.com/alelec/nuitka-setuptools',
         use_scm_version=True,
         include_package_data=True,
-        install_requires=install_requires,
+        install_requires=['setuptools_scm'],
         setup_requires=['setuptools_scm'],
         cmdclass={'build_ext': Nuitka},
-        ext_modules=Compile(['nuitka_setuptools'])
+        ext_modules=Compile(['nuitka_setuptools']),
+        **build_settings
     )
