@@ -69,7 +69,7 @@ def Compile(modules, compile_each_file=True):
 
             # Just get all submodules from sys.modules
             for key, val in sys.modules.items():
-                if module_name in key:
+                if module_name == key or key.startswith(module_name + "."):
                     _submodules |= {val.__name__}
 
             for attr, val in mod.__dict__.items():
