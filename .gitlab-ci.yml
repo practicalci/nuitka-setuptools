@@ -13,7 +13,8 @@ test:
   script:
   - cd tests
   - python setup.py bdist_wheel
-  - tar xvf dist/*.tgz
+  - cd dist
+  - unzip *.whl
 
 deploy:
   stage: deploy
