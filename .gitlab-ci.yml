@@ -1,7 +1,6 @@
-image: quay.io/pypa/manylinux1_x86_64
+image: python:3
 
 before_script:
-  - export PATH=/opt/python/cp35-cp35m/bin:$PATH
   - pip install -U pip setuptools wheel twine
   - pip install .
 
