@@ -13,8 +13,9 @@ test:
   script:
   - cd tests
   - python setup.py bdist_wheel
+  # Inspect built wheel
   - cd dist
-  - unzip *.whl
+  - python -c 'import zipfile,glob; zipfile.ZipFile(*glob.glob("*.whl")).printdir()'
 
 deploy:
   stage: deploy
