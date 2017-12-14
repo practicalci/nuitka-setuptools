@@ -12,7 +12,7 @@ temp
 dist
 .eggs
 .cache
-.venv
+.venv*
 Release
 .DS_Store
 *.pyd

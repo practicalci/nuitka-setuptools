@@ -209,13 +209,13 @@ class Nuitka(build_ext):
                 if ext.compile_each_file:
                     proc = subprocess.run([sys.executable, str(self._nuitka_script()),
                                            '--module', target, '--recurse-none'] + ext.extra_cmd, cwd=str(cwd),
-                                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 else:
                     proc = subprocess.run([sys.executable, str(self._nuitka_script()), '--module', target,
                                            '--recurse-directory', target, '--recurse-to', target] + ext.extra_cmd,
-                                          cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                          cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-                pyd = (cwd / target).with_suffix(".pyd")
+                pyd = (cwd / target).with_suffix(".pyd" if os.name == 'nt' else '.so')
 
                 if pyd.exists():
                     pyd.rename(final_pyd)
@@ -223,7 +223,9 @@ class Nuitka(build_ext):
                     break
 
                 else:
-                    print(proc.stdout)
+                    err = '\n'.join((proc.stdout.decode(), proc.stderr.decode()))
+                    if err != '\n':
+                        print(err)
                     if retry:
                         print("ERROR: Compilation Failed, retry...")
                     else:
