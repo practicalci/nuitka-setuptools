@@ -28,7 +28,7 @@ class NuitkaCompile(Extension):
         self.src_age = src_age
 
 
-def Compile(modules, compile_each_file=True):
+def Compile(modules, compile_each_file=True, nuitka_options=None):
 
     def _find_modules(module_name):
         """ Ideally we want to find all the modules imported by the provided top level module
@@ -96,12 +96,13 @@ def Compile(modules, compile_each_file=True):
 
         submodules, others, = _find_modules(mod)
 
-        extra_cmd = []
+        extra_cmd = nuitka_options or []
+
         if compile_each_file:
             for sub in {mod} | submodules:
                 _mod = importlib.import_module(sub)
                 src_age = os.path.getmtime(_mod.__file__)
-                extensions.append(NuitkaCompile(sub, compile_each_file, src_age=src_age))
+                extensions.append(NuitkaCompile(sub, compile_each_file, extra_cmd=extra_cmd, src_age=src_age))
 
         else:
             head = len('.'.join(path[:-1])) + 1

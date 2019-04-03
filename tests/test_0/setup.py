@@ -15,7 +15,7 @@ else:
     build_settings = {}
 
 setup(
-    name='nuitka_setuptools_test',
+    name='nuitka_setuptools_test_0',
     py_modules=['mod'],
     packages=['pkg'],
     description='Test module build for nuitka_setuptools',

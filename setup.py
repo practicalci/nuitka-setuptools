@@ -21,7 +21,7 @@ setup(
     long_description=long_description,
     author='Andrew Leech',
     author_email='andrew@alelec.net',
-    url='https://gitlab.com/alelec/nuitka-setuptools',
+    url='https://github.com/practicalci/nuitka-setuptools',
     include_package_data=True,
     install_requires=install_requires,
 )
