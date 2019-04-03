@@ -4,6 +4,8 @@ import shutil
 import inspect
 import importlib
 import subprocess
+from distutils import log
+
 try:
     from pathlib import Path
 except ImportError:
@@ -11,7 +13,6 @@ except ImportError:
 
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext
-
 
 class NuitkaCompile(Extension):
     def __init__(self, mod, compile_each_file=True, extra_cmd=None, src_age=0):
@@ -203,7 +204,7 @@ class Nuitka(build_ext):
                     # Clean up from previous build
                     self._delete_path(final_pyd)
 
-            print("compiling %s -> %s" % ((cwd / target), final_pyd))
+            log.info("compiling %s -> %s" % ((cwd / target), final_pyd))
 
             for retry in reversed(range(3)):
                 if ext.compile_each_file:
@@ -212,7 +213,7 @@ class Nuitka(build_ext):
                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 else:
                     proc = subprocess.run([sys.executable, str(self._nuitka_script()), '--module', target,
-                                           '--recurse-directory', target, '--recurse-to', target] + ext.extra_cmd,
+                                           '--include-package', target, '--recurse-to', target] + ext.extra_cmd,
                                           cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 pyd = (cwd / target).with_suffix(".pyd" if os.name == 'nt' else '.so')
@@ -225,8 +226,8 @@ class Nuitka(build_ext):
                 else:
                     err = '\n'.join((proc.stdout.decode(), proc.stderr.decode()))
                     if err != '\n':
-                        print(err)
+                        log.error(err)
                     if retry:
-                        print("ERROR: Compilation Failed, retry...")
+                        log.error("Compilation Failed, retry...")
                     else:
                         raise Exception("ERROR: Compilation Failed!")

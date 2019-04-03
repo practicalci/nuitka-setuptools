@@ -5,7 +5,7 @@ from setuptools import setup
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
     long_description = readme.read()
 
-install_requires = ['setuptools_scm', 'nuitka', ]
+install_requires = ['setuptools_scm', 'nuitka>=0.6<0.7', ]
 
 PY2 = sys.version_info[0] == 2
 if PY2:
