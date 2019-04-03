@@ -24,5 +24,4 @@ setup(
     url='https://gitlab.com/alelec/nuitka-setuptools',
     include_package_data=True,
     install_requires=install_requires,
-    setup_requires=['setuptools_scm']
 )
