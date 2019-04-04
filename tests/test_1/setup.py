@@ -12,7 +12,7 @@ if any('bdist' in arg for arg in sys.argv):
     build_settings = dict(
         # Compile module
         cmdclass={'build_ext': Nuitka},
-        ext_modules=Compile(packages, False, ['--file-reference-choice', 'original']),
+        ext_modules=Compile(packages, False, ['--show-scons','--file-reference-choice', 'original']),
     )
 else:
     build_settings = {}

@@ -1,3 +1,11 @@
+#
+# 2019-04-04 - Modified by Mario Costa, mario.silva.costa@gmail.com
+# - extended interface to support specific nuitka arguments to be passed from
+# setup script.
+# - updated deprecated nuita command line parameters.
+#
+
+
 import os
 import sys
 import shutil

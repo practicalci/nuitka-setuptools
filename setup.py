@@ -13,8 +13,8 @@ if PY2:
 
 
 setup(
-    name='nuitka_setuptools',
-    version='0.6.0',
+    name='nuitka_setuptools2',
+    version='3.0.0',
     py_modules=['nuitka_setuptools'],
     description='Extension to setuptools to run your package through nuitka to '
                 'produce compiled, faster, obfuscated binary modules.',
